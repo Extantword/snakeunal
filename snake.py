@@ -9,17 +9,19 @@ INVALID_MOVEMENT = 2
 
 matrix = [[0] * 13 for _ in range(13)]
 
-def print_matrix(matrix):
+def print_matrix(matrix, snake):
 
     print('-'*15)
 
-    for row in matrix:
+    for i, row in enumerate(matrix):
         
         str_ = "|"
 
-        for char in row:
-
-            if(char == 0):
+        for j, char in enumerate(row):
+            
+            if((j, i) == snake[-1]):
+                str_+= "░"
+            elif(char == 0):
                 str_ += " "
             elif(char == 1):
                 str_ += "█"
@@ -77,25 +79,28 @@ def update_snake(snake, direction, apple = None):
 
 def add_apple():
 
-    possible_x = []
+    possible_y = []
 
     for i in range(13):
 
         if 0 in matrix[i]:
-            possible_x.append(i)
+            possible_y.append(i)
     
-    x_random = random.choice(possible_x)
-    possible_y = []
+    y_random = random.choice(possible_y)
+    possible_x = []
 
     for j in range(13):
 
-        if matrix[x_random][j] == 0:
+        if matrix[y_random][j] == 0:
 
-            possible_y.append(j)
+            possible_x.append(j)
 
-    y_random = random.choice(possible_y)
+    x_random = random.choice(possible_x)
     apple = (x_random, y_random)
+
     return apple
+
+
 
 def random_apple_generation():
 
@@ -109,13 +114,14 @@ def start_game():
     matrix[7][6] = 1 #Iniciar la serpiente al principio
     matrix[8][6] = 1
 
-    apple = (8, 2)
-    matrix[2][8] = 2
+    apple = add_apple()
+    x_apple, y_apple = apple
+    matrix[y_apple][x_apple] = 2
 
     game_is_over = False
     apple_counter = 0
 
-    print_matrix(matrix)
+    print_matrix(matrix, snake)
     time = 0
 
     while(not game_is_over):
@@ -143,10 +149,14 @@ def start_game():
             elif(apple_counter == time and apple is None):
                 apple = add_apple()
                 x_apple, y_apple = apple
+
+                if(apple in snake):
+                    print('ERROR!')
+
                 matrix[y_apple][x_apple] = 2
                 apple_counter = 0
             
-            print_matrix(matrix)
+            print_matrix(matrix, snake)
 
             if(status == GAME_LOST):
                 print('¡PERDISTE!')
@@ -164,14 +174,8 @@ start_game()
 
 """FALTA LO SIGUIENTE:
 
--1. CUADRAR LA COSA DE LAS COORDENADAS O VER QUE HACER CON ESO (ESTÁN AL REVÉS)
+1. Hacer que en función de a donde se mueva, cambie el caracter
+2. Poner otro caracter para la cabeza
+3. Que la consola se limpie adecuadamente después de cada movimiento 
 
-1. LA COSA DE LOS 10 MOVIMIENTOS PARA PONER LA MANZANA (LISTO!!)
-
-2. VERIFICAR QUE EL JUEGO ES MINIMAMENTE FUNCIONAL (LISTO!!)
-
-3. ACLARAR AL USUARIO COMO SE INGRESAN LOS INPUTS
-4. NOTIFICAR QUE EL JUEGO ACABÓ (PREGUNTAR A JULIÁN LA ESPECIFICIDAD DE ESE MENSAJE)
-
-PRÓXIMA REUNIÓN: LUNES A LAS 2?
 """
