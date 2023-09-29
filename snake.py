@@ -58,22 +58,22 @@ def update_snake(snake, direction, apple = None):
     if(not (0 <= new_x < 13 and 0 <= new_y < 13)):
         return GAME_LOST
     
-    #La serpiente no se toca consigo misma
-    if(matrix[new_y][new_x] == 1):
-        return GAME_LOST #-1 signfica que se perdió el juego
+       # print('new_y:',new_y, 'new_x',new_x)
 
-    if(new_head != apple): #2. Si hay una manzana 
-        x_tail, y_tail = snake[0]
+    x_tail, y_tail = snake[0]
+    #La serpiente no se toca consigo misma
+    if(matrix[new_y][new_x] == 1 and (new_x != x_tail or new_y != y_tail)):
+        return GAME_LOST #-1 significa que se perdió el juego
+
+    if(new_head != apple): #2. Si no hay una manzana 
         snake.popleft() # Quitar la cola
         matrix[y_tail][x_tail] = 0
-
-       # print('new_y:',new_y, 'new_x',new_x)
 
     snake.append(new_head) #Mover a la serpiente
     matrix[new_y][new_x] = 1 #Actualizar la matriz
 
     if(new_head == apple):
-        return APPLE_EATEN #1 Signfica que si se comió la manzana
+        return APPLE_EATEN #1 Significa que si se comió la manzana
 
     return GAME_CONTINUE #0 significa que el juego continua
 
@@ -130,6 +130,8 @@ def start_game():
         command = command.upper()
 
         if(command == 'W' or command == 'S' or command == 'A' or command == 'D'): #Validaciones de que se ingresó algo correcto
+            os.system('cls')
+            print('¡Bienvenido a SnakeUNAL! \nIngresa un solo caracter (W, A, S, D) para mover a la serpiente')
 
             status = update_snake(snake, command, apple)
 
@@ -168,14 +170,7 @@ def start_game():
         else:
             print('Haz ingresado una tecla no válida!')
 
-        
+    
+os.system('cls')    
 print('¡Bienvenido a SnakeUNAL! \nIngresa un solo caracter (W, A, S, D) para mover a la serpiente')
 start_game()
-
-"""FALTA LO SIGUIENTE:
-
-1. Hacer que en función de a donde se mueva, cambie el caracter
-2. Poner otro caracter para la cabeza
-3. Que la consola se limpie adecuadamente después de cada movimiento 
-
-"""
